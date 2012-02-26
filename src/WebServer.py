@@ -10,14 +10,20 @@ host = ''
 port = 80
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sock.bind((host, port))
 sock.listen(1)
 
 print 'listening'
 
-conn, addr = sock.accept()
-print 'Connection from', addr
+while 1:
+    conn, addr = sock.accept()
+    print 'Connection from', addr
 
-data = conn.recv(1024)
-print data
-conn.close()
+    sockFile = conn.makefile('rw', 0)
+    
+    sockFile.write('HTTP/1.0 200 OK\n\n')
+    sockFile.write('<html><head><title>Hello World!</title></head>')
+    sockFile.write('<body>Hello World!</body></html>')
+    sockFile.close()
+    conn.close()
