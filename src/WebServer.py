@@ -5,6 +5,7 @@ Created on Feb 25, 2012
 '''
 
 import socket
+import os
 
 host = ''
 port = 80
@@ -22,8 +23,15 @@ while 1:
 
     sockFile = conn.makefile('rw', 0)
     
-    sockFile.write('HTTP/1.0 200 OK\n\n')
-    sockFile.write('<html><head><title>Hello World!</title></head>')
-    sockFile.write('<body>Hello World!</body></html>')
+    webpage = 'HTTP/1.0 200 OK\n\n'
+    webpage += '<html><head><title>FileDirectory</title></head>'
+    webpage +='<body>cwd:' + os.getcwd() + '<br/><br/>'
+    for entry in os.listdir(os.getcwd()):
+        webpage += entry +'<br/>'
+    webpage += '</body></html>'
+    
+    print webpage
+    sockFile.write(webpage)
     sockFile.close()
     conn.close()
+    
